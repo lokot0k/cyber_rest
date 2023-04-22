@@ -1,0 +1,26 @@
+FROM python:3.10
+
+# Step 1: Setup Environment Variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    POETRY_NO_INTERACTION=1 \
+    POETRY_HOME='/usr/local' \
+    POETRY_VIRTUALENVS_CREATE=false \
+    POETRY_CACHE_DIR='/var/cache/pypoetry'
+
+# Step 2: Install Utilites
+RUN apt-get update; \
+    apt-get install -y curl make build-essential;
+
+WORKDIR /code
+
+# Step 3: Install Python Modules
+COPY requirements.txt /code/
+RUN pip install -r requirements.txt
+
+# Step 4: Copy Application
+COPY . .
+# Step 5: Run Application
+CMD ["make", "run-backend"]
