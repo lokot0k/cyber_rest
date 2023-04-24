@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from . import users, health, devices, booking
+from . import users, health, devices, booking, auth
 
 router = APIRouter()
 router.include_router(
@@ -22,4 +22,9 @@ router.include_router(
     booking.router,
     prefix='/bookings',
     tags=['booking'],
+)
+router.include_router(
+    auth.router,
+    prefix='/auth',
+    tags=['auth'],
 )

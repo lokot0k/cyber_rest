@@ -7,9 +7,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from internal.dto.user import (
     UserFilter,
-    BaseUser, UserEdit,
+    BaseUser, UserEdit, PasswordUser,
 )
 from internal.entity.user import User
+from internal.usecase.auth.auth import verify_password, get_hashed_password
 from internal.usecase.utils import get_session
 
 
@@ -20,7 +21,8 @@ class UserService(object):
     ) -> None:
         self.repository = InjectRepository(User, session)
 
-    async def create(self, dto: BaseUser) -> User:
+    async def create(self, dto: PasswordUser) -> User:
+        dto.password = get_hashed_password(dto.password)
         user = self.repository.create(**dto.dict())
         return await self.repository.save(user)
 
@@ -44,3 +46,12 @@ class UserService(object):
         if dto.password:
             user.password = dto.password
         return await self.repository.save(user)
+
+    async def authenticate_user(self, username: str,
+                                password: str) -> None | User:
+        user = await self.repository.find_one_or_fail(
+            username=username,
+        )
+        if not verify_password(password, user.password):
+            return None
+        return user

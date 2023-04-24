@@ -20,14 +20,17 @@ class BookingRead(BaseBooking):
         orm_mode = True
 
 
-class BookingCreate(BaseBooking):
+class BookingCreate(BaseModel):
     start_time: float
     end_time: float
+    device_id: uuid.UUID
 
 
-class BookingEdit(BaseBooking):
-    user_id: uuid.UUID | None = None
-    device_id: uuid.UUID | None = None
+class BookingCreateFull(BookingCreate):
+    user_id: uuid.UUID
+
+
+class BookingEdit(BaseModel):
     start_time: float | None = None
     end_time: float | None = None
 

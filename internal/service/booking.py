@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from internal.dto.booking import (
     BookingFilter,
-    BaseBooking, BookingEdit, BookingCreate
+    BaseBooking, BookingEdit, BookingCreate, BookingCreateFull
 )
 from internal.entity.booking import Booking
 from internal.usecase.utils import get_session
@@ -21,7 +21,7 @@ class BookingService(object):
     ) -> None:
         self.repository = InjectRepository(Booking, session)
 
-    async def create(self, dto: BookingCreate) -> Booking:
+    async def create(self, dto: BookingCreateFull) -> Booking:
         dto.start_time = datetime.fromtimestamp(dto.start_time)
         dto.end_time = datetime.fromtimestamp(dto.end_time)
         booking = self.repository.create(**dto.dict())
@@ -42,8 +42,8 @@ class BookingService(object):
 
     async def edit(self, booking_id: uuid.UUID, dto: BookingEdit) -> Booking:
         booking = await self.repository.find_one_or_fail(id=booking_id)
-        if dto.user_id:
-            booking.user_id = dto.user_id
-        if dto.device_id:
-            booking.device_id = dto.device_id
+        if dto.end_time:
+            booking.end_time = datetime.fromtimestamp(dto.end_time)
+        if dto.start_time:
+            booking.start_time = datetime.fromtimestamp(dto.start_time)
         return await self.repository.save(booking)

@@ -11,7 +11,7 @@ class ResponseExample(TypedDict):
     detail: NotRequired[str]
 
 
-class ResponseSchema(dict):  # noqa: WPS600
+class ResponseSchema(dict):
 
     def __init__(
         self,
