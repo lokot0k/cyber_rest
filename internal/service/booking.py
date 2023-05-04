@@ -44,7 +44,7 @@ class BookingService(object):
         if any([(dto.start_time < b.start_time < dto.end_time) or
                 (b.start_time < dto.start_time < b.end_time) for b in
                 bookings]):
-            return await self.repository.delete(booking)
+            return await self.repository.delete(id=booking.id)
         scheduler.add_job(self.set_device_unavailable, 'date',
                           run_date=dto.start_time, id=f'{booking.id}__start',
                           args=[booking.id])

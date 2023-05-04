@@ -1,9 +1,6 @@
-from apscheduler.executors.pool import ThreadPoolExecutor
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-executors = {
-    'default': ThreadPoolExecutor(50),
-}
-scheduler = BackgroundScheduler({'apscheduler.timezone': 'Europe/Moscow'},
-                                executors=executors)
-scheduler.start()
+scheduler = AsyncIOScheduler({'apscheduler.timezone': 'Europe/Moscow'}, )
+
+if not scheduler.running:
+    scheduler.start()
