@@ -36,6 +36,9 @@ class DeviceService(object):
             Device.description.contains(dto.description),
         )
 
+    async def find_by_id(self, device_id: uuid.UUID) -> Device:
+        return await self.repository.find_one_or_fail(id=device_id)
+
     async def delete(self, device_id: uuid.UUID) -> None:
         return await self.repository.delete(id=device_id)
 
